@@ -1,0 +1,26 @@
+{
+  "name": "mcp-code-execution-demo",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "MCP code execution demo with GitHub integration",
+  "scripts": {
+    "generate-wrappers": "tsx scripts/generate-mcp-wrappers.ts",
+    "postinstall": "npm run generate-wrappers || echo 'Warning: MCP wrapper generation failed. Run npm run generate-wrappers manually when servers are available.'",
+    "ensure-wrappers": "tsx scripts/ensure-wrappers.ts",
+    "start": "tsx agent.ts",
+    "start:code": "tsx agent.ts --mode=code-execution",
+    "start:mcp": "tsx agent.ts --mode=direct-mcp"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.1.42",
+    "@anthropic-ai/claude-code": "^2.0.42",
+    "@modelcontextprotocol/sdk": "^1.22.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "json-schema-to-typescript": "^15.0.4",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}

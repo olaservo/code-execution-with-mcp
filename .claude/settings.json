@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(workspace/**)",
+      "Edit(.claude/skills/**)"
+    ],
+    "deny": [
+    ]
+  }
+}

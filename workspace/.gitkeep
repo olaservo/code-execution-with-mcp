@@ -1,0 +1,4 @@
+# Workspace Directory
+
+This directory is used for intermediate data during agent execution.
+Files written here (JSON, CSV, etc.) are gitignored.
