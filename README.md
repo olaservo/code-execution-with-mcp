@@ -1,18 +1,23 @@
-# MCP Code Execution Demo with Claude Agent SDK
+# MCP Code Execution Demo with the Claude Agent SDK
 
 A demonstration of the MCP code execution pattern using the Claude Agent SDK.
 
 ## Overview
 
-This project was inspired by [this blog post by Anthropic](https://www.anthropic.com/engineering/code-execution-with-mcp).  It didn't come with complete code, but it did include a lot of hints on how to implement this pattern.  
+This project was inspired by [this blog post by Anthropic](https://www.anthropic.com/engineering/code-execution-with-mcp).  The blog post didn't come with complete code, but it did include a lot of hints on how to implement this pattern.  
 
 I wanted to keep this version simple and as consistent as possible with the blog.  I decided to use the [Claude Agent SDK](https://docs.claude.com/en/docs/agent-sdk/overview) as it already supports Agent Skills, MCP, and other necessary features out of the box.
 
-This implementation of this pattern generates **RPC wrapper files** for MCP tools. These wrappers are type-safe interfaces that agents can discover and use as code.
+This implementation of this pattern generates RPC wrapper files for MCP tools. These wrappers are type-safe interfaces that agents can discover and use as code.
 
 ## Isn't this evidence that MCP is a huge mistake/over-engineered/etc?
 
-I've been (sort of) surprised to see all the reactions to the blog post that take this as evidence that `MCP is bad`.  Its just a new way of using it. Sometimes it will make sense, and sometimes it won't.  I'm a big fan of using empirical evidence to understand things like this better, rather than getting into a theoretical debate.  Hopefully concrete interpretations of these ideas help to generate more evidence, so that you can decide for yourself if this type of solution fits a use case.
+I've been (sort of) surprised to see all the reactions to the blog post that take this as evidence that `MCP is bad`.  This is just a new way of using it. Sometimes it will make sense, and sometimes it won't.  
+
+I'm a big fan of using empirical evidence to understand things like this better, rather than getting into a theoretical debate.  Hopefully concrete interpretations of these ideas help to generate more evidence, so that you can decide for yourself if this type of solution fits a use case.
+
+I also like [Shaunak Joshi](https://x.com/shaunakjoshi)'s take in his response to [this tweet](https://x.com/stevekrouse/status/1986922520298287496) related to this subject:
+> MCP handles distribution and discovery (installable apps like connectors exposing capabilities), while code mode handles just pure execution (models generate code using auto-generated SDKs from MCP schemas). MCP then is more of a packaging layer and you get both ecosystem benefits and composability.
 
 ## ⚠️ Security & Sandboxing Limitations
 
@@ -66,7 +71,7 @@ The [Claude Code repo](https://github.com/anthropics/claude-code) is a useful te
 
 _Shoutout to [@johncburns1](https://github.com/johncburns1) for coming up with the GitHub issues use case idea!_
 
-In preliminary experiments, Claude was able to create a reusable skill and use the correct tool to successfully complete the task in code execution mode.
+In preliminary experiments, Claude was consistently able to create a reusable skill and use the correct tool to successfully complete the task in code execution mode.
 
 In direct MCP mode, Claude reliably called the right tools and failed with a 400 error after attempting to stuff too much data into context.
 
@@ -75,7 +80,6 @@ You can find a full zip archive of the logs, metrics, and workspace files genera
 ### Counter-example: processing 100s of issues
 
 When testing with other repos that only contained ~100 issues, direct MCP was comparable or sometimes more efficient than code execution.  (Data coming soon.)
-
 
 ## Execution Flow
 
