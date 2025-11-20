@@ -252,11 +252,11 @@ The `.mcp.json` file configures which MCP servers to connect to:
 
 **Note:** Environment variables (e.g., `${GITHUB_PAT}`) are substituted when loading the config.
 
-### Server Instructions
+### Transport Support
 
-During wrapper generation, the script captures server instructions from the MCP server's `InitializeResult` (if provided) and saves them to `servers/{server-name}/README.md`.
-
-The agent should read these instructions before using tools from that server to ensure proper usage patterns.
+The client supports:
+- **HTTP Transport** (`type: "http"`): Uses `StreamableHTTPClientTransport` for remote servers
+- **Stdio Transport** (`type: "stdio"`): Uses `StdioClientTransport` for local subprocess servers
 
 ### RPC Client Bridge
 
@@ -296,11 +296,11 @@ export async function callMCPTool<T = any>(
 }
 ```
 
-### Transport Support
+### Server Instructions
 
-The client supports:
-- **HTTP Transport** (`type: "http"`): Uses `StreamableHTTPClientTransport` for remote servers
-- **Stdio Transport** (`type: "stdio"`): Uses `StdioClientTransport` for local subprocess servers
+During wrapper generation, the script captures server instructions from the MCP server's `InitializeResult` (if provided) and saves them to `servers/{server-name}/README.md`.
+
+The agent should read these instructions before using tools from that server to ensure proper usage patterns.
 
 ---
 
