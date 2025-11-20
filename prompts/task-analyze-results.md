@@ -6,6 +6,8 @@ Analyze and compare the performance, efficiency, and output quality between code
 ## Input
 Path to a results zip file containing comparison data: `/Users/x3d2/claude-agent-sdk-experiments/example_results/claude_code_repo_results-2025-11-18T16-07-57-3NZ.zip`
 
+**Note:** To analyze different results, the human should edit the path above in this task file.
+
 ## Zip File Structure
 The zip file contains multiple test runs with:
 - `metrics/*.json` - Performance metrics (duration, cost, tokens)

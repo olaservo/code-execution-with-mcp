@@ -181,6 +181,11 @@ tsx agent.ts --model=haiku                   # Use Haiku instead of Sonnet
 tsx agent.ts --help                          # Show all options
 ```
 
+**Task Input Files:**
+
+Some tasks (like `task-analyze-results.md`) require input files. To specify input files, edit the path directly in the task file at `prompts/task-analyze-results.md`.
+```
+
 ### Session Logging
 
 Each run automatically creates detailed session logs with a unique session ID:
