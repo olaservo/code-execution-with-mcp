@@ -298,9 +298,9 @@ export async function callMCPTool<T = any>(
 
 ### Server Instructions
 
-During wrapper generation, the script captures server instructions from the MCP server's `InitializeResult` (if provided) and saves them to `servers/{server-name}/README.md`.
+During wrapper generation, the script captures [server instructions](https://modelcontextprotocol.io/specification/draft/schema#initializeresult) from the MCP server's `InitializeResult` (if provided) and saves them to `servers/{server-name}/README.md`.
 
-The agent should read these instructions before using tools from that server to ensure proper usage patterns.
+The agent should read these instructions before using tools from that server to ensure proper usage patterns. You can check out [this blog](https://blog.modelcontextprotocol.io/posts/2025-11-03-using-server-instructions/) for more information on what is typically included here.
 
 ---
 
