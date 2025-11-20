@@ -334,7 +334,7 @@ export async function compareResults(zipPath: string): Promise<ComparisonData> {
 }
 
 // CLI entry point
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const zipPath = process.argv[2];
   if (!zipPath) {
     console.error('Usage: tsx implementation.ts <zip-path>');
@@ -343,11 +343,11 @@ if (require.main === module) {
 
   compareResults(zipPath)
     .then(data => {
-      console.log('\n✓ Analysis complete');
+      console.log('\nAnalysis complete');
       console.log(`  Code-execution: ${data.codeExecution.count} runs (${data.codeExecution.successCount} successful, ${data.codeExecution.failureCount} failed)`);
       console.log(`  Direct-MCP: ${data.directMcp.count} runs (${data.directMcp.successCount} successful, ${data.directMcp.failureCount} failed)`);
       if (data.failureSummary.totalFailures > 0) {
-        console.log(`\n  ⚠ Note: ${data.failureSummary.totalFailures} failed run(s) excluded from metrics comparison`);
+        console.log(`\n  Note: ${data.failureSummary.totalFailures} failed run(s) excluded from metrics comparison`);
       }
       console.log('\n  Data saved to ./workspace/comparison-data.json');
     })
