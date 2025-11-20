@@ -19,7 +19,8 @@ This skill analyzes zip files containing experimental comparison data between co
 ### Features
 
 - **Flexible Discovery**: Automatically scans and adapts to any zip structure
-- **Performance Metrics**: Duration, cost, token usage, efficiency ratios
+- **Failed Run Detection**: Identifies failed runs via FAILED__ prefix in metrics files, separates from successful runs
+- **Performance Metrics**: Duration, cost, token usage, efficiency ratios (calculated from successful runs only)
 - **Output Quality Assessment**: Compares completeness and accuracy of results
 - **Hybrid Analysis**: Script aggregates data, model performs semantic comparison
 - **Actionable Recommendations**: Clear guidance on when to use each approach
@@ -52,10 +53,11 @@ await compareResults(zipPath);
 ## Output Files
 
 The skill automatically saves:
-- `./workspace/comparison-data.json` - Aggregated metrics, file catalog, raw data
-- `./workspace/comparison-analysis-report.md` - Comprehensive comparison report with:
+- `./workspace/comparison-data.json` - Aggregated metrics, file catalog, raw data including failure summary
+- `./workspace/comparison-analysis-report.md` - Comparison report with:
   - Executive summary with key findings
-  - Side-by-side performance comparison tables
+  - Success/failure rates for each approach
+  - Performance comparison (successful runs only)
   - Approach analysis (pros/cons)
   - Output quality assessment
   - Recommendations for when to use each approach

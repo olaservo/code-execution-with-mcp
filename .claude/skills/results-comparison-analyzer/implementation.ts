@@ -254,6 +254,10 @@ export async function compareResults(zipPath: string): Promise<ComparisonData> {
       const isFailed = filename.startsWith('FAILED__');
       const sessionId = isFailed ? filename.slice(9) : filename; // Remove "FAILED__" prefix if present
 
+      if (isFailed) {
+        console.log(`  - Detected failed run: ${filename}`);
+      }
+
       // Find corresponding workspace archive (may have FAILED__ prefix)
       const workspaceDir = path.join(extractDir, 'workspace_archive', filename);
       const workspaceFiles = await catalogWorkspaceFiles(workspaceDir, extractDir);
@@ -278,9 +282,9 @@ export async function compareResults(zipPath: string): Promise<ComparisonData> {
     const totalFailed = runs.filter(r => r.isFailed).length;
     const totalSuccessful = runs.length - totalFailed;
 
-    console.log(`Code-execution runs: ${codeExecutionRuns.length}`);
-    console.log(`Direct-MCP runs: ${directMcpRuns.length}`);
-    console.log(`Success/Failed: ${totalSuccessful}/${totalFailed}`);
+    console.log(`Code-execution runs: ${codeExecutionRuns.length} (${codeExecutionRuns.filter(r => r.isFailed).length} failed)`);
+    console.log(`Direct-MCP runs: ${directMcpRuns.length} (${directMcpRuns.filter(r => r.isFailed).length} failed)`);
+    console.log(`Total: Success=${totalSuccessful}, Failed=${totalFailed}`);
 
     if (codeExecutionRuns.length === 0 || directMcpRuns.length === 0) {
       throw new Error('Need at least one run of each mode to compare');

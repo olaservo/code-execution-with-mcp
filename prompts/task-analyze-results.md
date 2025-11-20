@@ -48,6 +48,12 @@ Calculate for both approaches:
 
 Save to: `./workspace/comparison-analysis-report.md`
 
+**Verbosity Constraints:**
+- Keep report concise (target 150-200 lines total)
+- Focus on actionable insights, not exhaustive data
+- Use single consolidated tables instead of multiple detailed breakdowns
+- Skip technical deep dives unless critical to recommendations
+
 **Report Structure:**
 - **Executive Summary**
   - Key findings and recommendation
@@ -60,16 +66,15 @@ Save to: `./workspace/comparison-analysis-report.md`
   - Mention if failures indicate reliability concerns
 
 - **Performance Comparison**
-  - Side-by-side metrics table (successful runs only)
-  - Duration comparison (with ratios)
-  - Cost comparison (with ratios)
-  - Token efficiency analysis
+  - Single summary table with key metrics (successful runs only)
+  - Include: duration, cost, turns, token usage
+  - Show ratios comparing code-execution vs direct-MCP
   - Clear indication that failed runs are excluded
 
 - **Approach Analysis**
-  - Code-execution approach: How it works, pros/cons
-  - Direct-MCP approach: How it works, pros/cons
-  - Execution pattern differences
+  - Brief explanation of each approach (2-3 sentences each)
+  - Key pros and cons (bullet points, 3-4 per approach)
+  - Main execution pattern differences
 
 - **Output Quality Assessment**
   - Completeness comparison
@@ -80,11 +85,6 @@ Save to: `./workspace/comparison-analysis-report.md`
   - When to use code-execution
   - When to use direct-MCP
   - Trade-offs and considerations
-
-- **Detailed Metrics**
-  - Full breakdown by run
-  - Model usage details
-  - Cache utilization patterns
 
 ### 5. Save Raw Data
 Save to: `./workspace/comparison-data.json`
