@@ -8,10 +8,7 @@
     "postinstall": "npm run generate-wrappers || echo 'Warning: MCP wrapper generation failed. Run npm run generate-wrappers manually when servers are available.'",
     "ensure-wrappers": "tsx scripts/ensure-wrappers.ts",
     "start": "tsx agent.ts",
-    "start:code": "tsx agent.ts --mode=code-execution",
     "start:mcp": "tsx agent.ts --mode=direct-mcp",
-    "start:default": "tsx agent.ts --task=task-default.md",
-    "start:default:mcp": "tsx agent.ts --task=task-default.md --mode=direct-mcp",
     "start:analyze-results": "tsx agent.ts --task=task-analyze-results.md",
     "clear-results": "tsx lib/clear-results.ts",
     "zip-results": "tsx lib/zip-results.ts && npm run clear-results -- -y"

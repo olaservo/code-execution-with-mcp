@@ -166,18 +166,19 @@ Detailed session logging captures detailed metrics for both modes, enabling dire
 ### Running the Agent
 
 ```bash
-# Default: Code execution mode
+# Default: Code execution mode with default task
 npm start
 
-# Explicit modes
-npm run start:code          # Code execution mode
+# Direct MCP mode
 npm run start:mcp           # Direct MCP mode
 
-# Model selection
-tsx agent.ts --model=haiku               # Use Haiku instead
+# Analyze results task (for comparing experiment results)
+npm run start:analyze-results
 
-# Get help
-tsx agent.ts --help
+# CLI options
+tsx agent.ts --task=task-analyze-results.md  # Specify a different task file
+tsx agent.ts --model=haiku                   # Use Haiku instead of Sonnet
+tsx agent.ts --help                          # Show all options
 ```
 
 ### Session Logging
@@ -328,7 +329,7 @@ const options = {
 
 Once the setup is complete, you can:
 
-1. **Edit `prompts/task.md`** to change what task the agent should perform
+1. **Edit `prompts/task-default.md`** to change what task the agent should perform
 2. **Compare execution modes** by running the same task in both modes and analyzing session logs
 3. **Add more MCP servers** to `.mcp.json` (supports both HTTP and stdio transports) and regenerate wrappers
 4. **Experiment with models** using `--model=haiku` or `--model=sonnet`
