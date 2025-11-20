@@ -19,12 +19,14 @@ dotenv.config();
 interface CLIArgs {
   mode: ExecutionMode;
   model?: string;
+  task: string;
 }
 
 function parseArgs(): CLIArgs {
   const args = process.argv.slice(2);
   let mode: ExecutionMode = "code-execution"; // default
   let model: string | undefined;
+  let task = "task-default.md"; // default
 
   for (const arg of args) {
     if (arg === "--mode=direct-mcp" || arg === "--direct-mcp") {
@@ -33,6 +35,8 @@ function parseArgs(): CLIArgs {
       mode = "code-execution";
     } else if (arg.startsWith("--model=")) {
       model = arg.split("=")[1];
+    } else if (arg.startsWith("--task=")) {
+      task = arg.split("=")[1];
     } else if (arg === "--help" || arg === "-h") {
       console.log(`
 Usage: tsx agent.ts [options]
@@ -45,22 +49,26 @@ Options:
   --model=<model-id>     Specify the Claude model to use (full model ID)
                          Examples: claude-sonnet-4-5-20250929
                                    claude-haiku-4-5-20251001
+  --task=<task-file>     Specify the task file to run (default: task-default.md)
+                         Examples: task-default.md
+                                   task-analyze-results.md
   --help, -h             Show this help message
 
 Examples:
-  tsx agent.ts                                      # Default (sonnet)
+  tsx agent.ts                                      # Default task (sonnet)
   tsx agent.ts --mode=direct-mcp                    # Direct MCP mode
   tsx agent.ts --model=claude-haiku-4-5-20251001    # Use Haiku
+  tsx agent.ts --task=task-analyze-results.md       # Run analyze results task
 `);
       process.exit(0);
     }
   }
 
-  return { mode, model };
+  return { mode, model, task };
 }
 
 async function main() {
-  const { mode, model } = parseArgs();
+  const { mode, model, task: taskFile } = parseArgs();
   const startTime = Date.now();
 
   // Load prompts from files
@@ -68,7 +76,7 @@ async function main() {
     ? './prompts/system-direct-mcp.md'
     : './prompts/system-code-execution.md';
   const systemPrompt = await fs.readFile(systemPromptFile, 'utf-8');
-  const task = await fs.readFile('./prompts/task.md', 'utf-8');
+  const task = await fs.readFile(`./prompts/${taskFile}`, 'utf-8');
 
   // Clear workspace directory to avoid confusion from previous runs
   console.log("=== Clearing Workspace ===\n");
@@ -122,7 +130,7 @@ async function main() {
   console.log(`Start time: ${new Date(startTime).toISOString()}\n`);
 
   // Create session logger
-  const logger = new SessionLogger(mode);
+  const logger = new SessionLogger(mode, taskFile);
   console.log(`Session ID: ${logger.getSessionId()}\n`);
 
   let resultMessage: SDKResultMessage | null = null;
@@ -190,14 +198,14 @@ async function main() {
       displayMetrics(resultMessage, mode, startTime);
 
       // Add metrics to session log
-      const metrics = createMetricsData(resultMessage, mode, startTime);
+      const metrics = createMetricsData(resultMessage, mode, taskFile, startTime);
       logger.setMetrics(metrics);
 
       // Always save metrics to file
-      await saveMetricsToFile(resultMessage, mode, startTime, logger.getSessionId());
+      await saveMetricsToFile(resultMessage, mode, taskFile, startTime, logger.getSessionId());
     } else if (error) {
       // Failure case - save partial metrics with error details
-      await saveFailedMetricsToFile(mode, startTime, logger.getSessionId(), error.message);
+      await saveFailedMetricsToFile(mode, taskFile, startTime, logger.getSessionId(), error.message);
     }
 
     // Save session log (always executed, even on error)

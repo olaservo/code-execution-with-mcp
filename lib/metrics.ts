@@ -14,6 +14,7 @@ export interface SessionLogEntry {
 export interface SessionLog {
   sessionId: string;
   mode: ExecutionMode;
+  task: string;
   startTime: string;
   endTime?: string;
   status: 'success' | 'error';
@@ -26,12 +27,13 @@ export class SessionLogger {
   private log: SessionLog;
   private logDir: string;
 
-  constructor(mode: ExecutionMode, logDir: string = './logs') {
+  constructor(mode: ExecutionMode, task: string, logDir: string = './logs') {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     this.logDir = logDir;
     this.log = {
       sessionId: `${mode}-${timestamp}`,
       mode,
+      task,
       startTime: new Date().toISOString(),
       status: 'success',
       entries: []
@@ -95,6 +97,7 @@ export class SessionLogger {
 
     lines.push(`# Session Log: ${this.log.sessionId}`);
     lines.push(`**Mode:** ${this.log.mode}`);
+    lines.push(`**Task:** ${this.log.task}`);
     lines.push(`**Start:** ${this.log.startTime}`);
     lines.push(`**End:** ${this.log.endTime || 'In progress'}`);
     const statusIcon = this.log.status === 'success' ? '✓' : '✗';
@@ -192,6 +195,7 @@ export class SessionLogger {
 export interface MetricsData {
   timestamp: string;
   mode: ExecutionMode;
+  task: string;
   timing: {
     totalElapsedMs: number;
     sdkDurationMs: number;
@@ -270,11 +274,13 @@ export function displayMetrics(result: SDKResultMessage, mode: ExecutionMode, st
 export function createMetricsData(
   result: SDKResultMessage,
   mode: ExecutionMode,
+  task: string,
   startTime: number
 ): MetricsData {
   return {
     timestamp: new Date().toISOString(),
     mode,
+    task,
     timing: {
       totalElapsedMs: Date.now() - startTime,
       sdkDurationMs: result.duration_ms,
@@ -297,11 +303,12 @@ export function createMetricsData(
 export async function saveMetricsToFile(
   result: SDKResultMessage,
   mode: ExecutionMode,
+  task: string,
   startTime: number,
   sessionId: string,
   metricsDir: string = './metrics'
 ): Promise<void> {
-  const metrics = createMetricsData(result, mode, startTime);
+  const metrics = createMetricsData(result, mode, task, startTime);
 
   // Ensure metrics directory exists
   await fs.mkdir(metricsDir, { recursive: true });
@@ -315,6 +322,7 @@ export async function saveMetricsToFile(
 
 export async function saveFailedMetricsToFile(
   mode: ExecutionMode,
+  task: string,
   startTime: number,
   sessionId: string,
   errorMessage: string,
@@ -323,6 +331,7 @@ export async function saveFailedMetricsToFile(
   const metrics = {
     timestamp: new Date().toISOString(),
     mode,
+    task,
     status: 'error' as const,
     errorMessage,
     timing: {
