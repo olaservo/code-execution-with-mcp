@@ -31,7 +31,7 @@ export async function buildOptions(config: BuildOptionsConfig): Promise<any> {
       settingSources: ['project' as const],
       systemPrompt,
       cwd: process.cwd(),
-      allowedTools: ["Bash", "Read", "Write", "List", "Skill"],
+      allowedTools: ["Bash", "Read", "Write", "Edit", "List", "Skill"],
       permissionMode: "default" as const,
       model: modelId
     };
