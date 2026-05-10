@@ -42,9 +42,19 @@ import * as fs from 'fs/promises';
 await fs.writeFile('./workspace/all-issues.json', JSON.stringify(allIssues, null, 2));
 ```
 
-### Step 4: Save Successful Code as Skills
+### Step 4: Save Successful Code as Skills (REQUIRED)
 
-AFTER successfully completing a task, create a reusable skill. For non-trivial skills, Read `prompts/skill-authoring-reference.md` before writing.
+**This step is not optional.** After every successfully completed task that involved writing non-trivial code, EITHER:
+
+- **(a)** Save the working code as a new skill under `.claude/skills/<name>/`, or
+- **(b)** Update an existing skill to cover this new variant (see Step 5), or
+- **(c)** Explicitly note in your final summary WHY you're not doing (a) or (b) — e.g., "the code was a one-line wrapper not worth saving" or "this duplicates existing skill X."
+
+Defaulting to (a) is correct in most cases. The code you wrote today is the existing skill the next run finds in Step 1 tomorrow. Workspace files get archived between runs; skills persist.
+
+Include "save as skill" as an item in your TodoWrite plan if you're using one, so it doesn't get dropped at the end.
+
+For non-trivial skills, Read `prompts/skill-authoring-reference.md` before writing.
 
 **Authoring checklist (from the agentskills spec):**
 
