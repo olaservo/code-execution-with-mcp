@@ -152,10 +152,48 @@ ${instructions}
   console.log(`Completed wrappers for ${serverName} in ${metadata.generationDurationMs}ms`);
 }
 
+// Build a JSDoc block from tool.description + tool.annotations.
+// Annotation defaults follow the MCP spec (readOnlyHint=false, destructiveHint=true,
+// idempotentHint=false, openWorldHint=true) so the agent always sees effective values
+// even when the server omits them.
+function buildJsDoc(tool: any): string {
+  const ann = tool.annotations ?? {};
+  const lines: string[] = [];
+
+  if (ann.title) {
+    lines.push(String(ann.title));
+    if (tool.description) {
+      lines.push('');
+      lines.push(...String(tool.description).split('\n'));
+    }
+  } else {
+    lines.push(...String(tool.description || 'No description provided').split('\n'));
+  }
+
+  const readOnly = ann.readOnlyHint ?? false;
+  const destructive = ann.destructiveHint ?? true;
+  const idempotent = ann.idempotentHint ?? false;
+  const openWorld = ann.openWorldHint ?? true;
+
+  const note = (key: string) => (key in ann ? '' : ' [default]');
+
+  lines.push('');
+  lines.push('Behavior hints:');
+  lines.push(`- Read-only: ${readOnly}${note('readOnlyHint')} (${readOnly ? 'does not modify state' : 'may modify state'})`);
+  if (!readOnly) {
+    lines.push(`- Destructive: ${destructive}${note('destructiveHint')} (${destructive ? 'may perform non-additive updates' : 'additive only'})`);
+    lines.push(`- Idempotent: ${idempotent}${note('idempotentHint')} (${idempotent ? 'safe to retry' : 'repeated calls may have additional effects'})`);
+  }
+  lines.push(`- Open-world: ${openWorld}${note('openWorldHint')} (${openWorld ? 'interacts with external entities' : 'closed domain'})`);
+
+  return lines
+    .map(l => (l ? ` * ${l.replace(/\*\//g, '* /')}` : ' *'))
+    .join('\n');
+}
+
 async function generateToolWrapper(serverName: string, tool: any): Promise<string> {
   const toolName = tool.name.replace(/^.*__/, '');
   const pascalName = toPascalCase(toolName);
-  const description = tool.description || 'No description provided';
 
   // Generate input interface from JSON Schema
   let inputInterface = '';
@@ -181,13 +219,15 @@ async function generateToolWrapper(serverName: string, tool: any): Promise<strin
     outputTypeName = outputInterfaceName;
   }
 
+  const jsDoc = buildJsDoc(tool);
+
   return `// Auto-generated wrapper for ${tool.name}
 import { callMCPTool } from "../client.js";
 
 ${inputInterface}
 ${outputInterface}
 /**
- * ${description}
+${jsDoc}
  */
 export async function ${toolName}(input: ${inputTypeName}): Promise<${outputTypeName}> {
   return callMCPTool('${serverName}', '${tool.name}', input);

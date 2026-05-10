@@ -30,8 +30,14 @@ export async function callMCPTool<T = any>(
     arguments: input
   });
 
-  // Parse the result if it's JSON text
-  if (result.content && result.content[0]) {
+  // Per MCP spec: a tool that declares outputSchema MUST return structuredContent.
+  // Prefer it over re-parsing the back-compat TextContent mirror.
+  if (result.structuredContent !== undefined) {
+    return result.structuredContent as T;
+  }
+
+  // Fallback: parse the first content block (legacy / no-outputSchema tools).
+  if (result.content && Array.isArray(result.content) && result.content[0]) {
     const content = result.content[0];
     if ('text' in content && content.text) {
       try {
