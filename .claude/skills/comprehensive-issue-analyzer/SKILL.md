@@ -99,6 +99,11 @@ The skill automatically saves:
 - MCP Tool: `list_issues` from GitHub server
 - Uses GraphQL pagination with cursor-based navigation
 
+## Gotchas
+
+- **Label name property**: Some labels may not have a `name` property defined. Always use optional chaining (`l.name?.toLowerCase()`) when checking label names to avoid runtime errors.
+
 ## Changelog
 
+- 2026-05-10: Bug fix - Added optional chaining for label.name checks to handle labels without name property (anthropics/anthropic-sdk-python, 101 issues)
 - 2025-11-18: Initial version - comprehensive analysis of anthropics/claude-code (5,205 issues)

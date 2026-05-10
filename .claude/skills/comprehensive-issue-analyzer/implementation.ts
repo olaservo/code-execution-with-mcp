@@ -147,13 +147,13 @@ function analyzeIssues(issues: Issue[]): IssueAnalysis {
     }
 
     // Prioritization
-    const isBug = labels.some(l => l.name.toLowerCase().includes('bug'));
+    const isBug = labels.some(l => l.name?.toLowerCase().includes('bug'));
     const commentCount = issue.comments || 0;
     const updatedAtForCheck = new Date(issue.updatedAt || issue.updated_at);
     const isRecentlyUpdated = !isNaN(updatedAtForCheck.getTime()) && updatedAtForCheck > new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
     const isEnhancement = labels.some(l =>
-      l.name.toLowerCase().includes('enhancement') ||
-      l.name.toLowerCase().includes('feature')
+      l.name?.toLowerCase().includes('enhancement') ||
+      l.name?.toLowerCase().includes('feature')
     );
     const isStale = !isNaN(updatedAtForCheck.getTime()) && updatedAtForCheck < thirtyDaysAgo;
 
