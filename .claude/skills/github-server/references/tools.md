@@ -19,19 +19,25 @@ Wrapper files live in `./servers/github/`. Import with: `import * as github from
 
 Add review comment to the requester's latest pending pull request review. A pending review needs to already exist to call this (check with the user if not sure).
 
-Wrapper: `./servers/github/add_comment_to_pending_review.ts`
+Required: `owner`, `repo`, `pullNumber`, `path`, `body`, `subjectType`
+
+Wrapper: `./servers/github/add_comment_to_pending_review.ts` (full input/output types)
 
 ### `add_issue_comment` _(destructive)_
 
 Add a comment to a specific issue in a GitHub repository. Use this tool to add comments to pull requests as well (in this case pass pull request number as issue_number), but only if user is not asking specifically to add review comments.
 
-Wrapper: `./servers/github/add_issue_comment.ts`
+Required: `owner`, `repo`, `issue_number`, `body`
+
+Wrapper: `./servers/github/add_issue_comment.ts` (full input/output types)
 
 ### `add_reply_to_pull_request_comment` _(destructive)_
 
 Add a reply to an existing pull request comment. This creates a new comment that is linked as a reply to the specified comment.
 
-Wrapper: `./servers/github/add_reply_to_pull_request_comment.ts`
+Required: `owner`, `repo`, `pullNumber`, `commentId`, `body`
+
+Wrapper: `./servers/github/add_reply_to_pull_request_comment.ts` (full input/output types)
 
 ### `assign_copilot_to_issue` _(destructive, idempotent)_
 
@@ -44,13 +50,17 @@ This tool can help with the following outcomes:
 More information can be found at:
 - https://docs.github.com/en/copilot/using-github-copilot/using-copilot-coding-agent-to-work-on-tasks/about-assigning-tasks-to-copilot
 
-Wrapper: `./servers/github/assign_copilot_to_issue.ts`
+Required: `owner`, `repo`, `issue_number`
+
+Wrapper: `./servers/github/assign_copilot_to_issue.ts` (full input/output types)
 
 ### `create_branch` _(destructive)_
 
 Create a new branch in a GitHub repository
 
-Wrapper: `./servers/github/create_branch.ts`
+Required: `owner`, `repo`, `branch`
+
+Wrapper: `./servers/github/create_branch.ts` (full input/output types)
 
 ### `create_or_update_file` _(destructive)_
 
@@ -62,163 +72,215 @@ git rev-parse <branch>:<path to file>
 
 SHA MUST be provided for existing file updates.
 
-Wrapper: `./servers/github/create_or_update_file.ts`
+Required: `owner`, `repo`, `path`, `content`, `message`, `branch`
+
+Wrapper: `./servers/github/create_or_update_file.ts` (full input/output types)
 
 ### `create_pull_request` _(destructive)_
 
 Create a new pull request in a GitHub repository.
 
-Wrapper: `./servers/github/create_pull_request.ts`
+Required: `owner`, `repo`, `title`, `head`, `base`
+
+Wrapper: `./servers/github/create_pull_request.ts` (full input/output types)
 
 ### `create_pull_request_with_copilot` _(destructive)_
 
 Delegate a task to GitHub Copilot coding agent to perform in the background. The agent will create a pull request with the implementation. You should use this tool if the user asks to create a pull request to perform a specific task, or if the user asks Copilot to do something.
 
-Wrapper: `./servers/github/create_pull_request_with_copilot.ts`
+Required: `owner`, `repo`, `problem_statement`, `title`
+
+Wrapper: `./servers/github/create_pull_request_with_copilot.ts` (full input/output types)
 
 ### `create_repository` _(destructive)_
 
 Create a new GitHub repository in your account or specified organization
 
-Wrapper: `./servers/github/create_repository.ts`
+Required: `name`
+
+Wrapper: `./servers/github/create_repository.ts` (full input/output types)
 
 ### `delete_file` _(destructive)_
 
 Delete a file from a GitHub repository
 
-Wrapper: `./servers/github/delete_file.ts`
+Required: `owner`, `repo`, `path`, `message`, `branch`
+
+Wrapper: `./servers/github/delete_file.ts` (full input/output types)
 
 ### `fork_repository` _(destructive)_
 
 Fork a GitHub repository to your account or specified organization
 
-Wrapper: `./servers/github/fork_repository.ts`
+Required: `owner`, `repo`
+
+Wrapper: `./servers/github/fork_repository.ts` (full input/output types)
 
 ### `get_commit` _(read-only)_
 
 Get details for a commit from a GitHub repository
 
-Wrapper: `./servers/github/get_commit.ts`
+Required: `owner`, `repo`, `sha`
+
+Wrapper: `./servers/github/get_commit.ts` (full input/output types)
 
 ### `get_copilot_job_status` _(read-only)_
 
 Get the status of a GitHub Copilot coding agent job. Use this to check if a previously submitted task has completed and to get the pull request URL once it's created. Provide the job ID (from create_pull_request_with_copilot) or pull request number (from assign_copilot_to_issue), or any pull request you want agent sessions for.
 
-Wrapper: `./servers/github/get_copilot_job_status.ts`
+Required: `owner`, `repo`, `id`
+
+Wrapper: `./servers/github/get_copilot_job_status.ts` (full input/output types)
 
 ### `get_file_contents` _(read-only)_
 
 Get the contents of a file or directory from a GitHub repository
 
-Wrapper: `./servers/github/get_file_contents.ts`
+Required: `owner`, `repo`
+
+Wrapper: `./servers/github/get_file_contents.ts` (full input/output types)
 
 ### `get_label` _(read-only)_
 
 Get a specific label from a repository.
 
-Wrapper: `./servers/github/get_label.ts`
+Required: `owner`, `repo`, `name`
+
+Wrapper: `./servers/github/get_label.ts` (full input/output types)
 
 ### `get_latest_release` _(read-only)_
 
 Get the latest release in a GitHub repository
 
-Wrapper: `./servers/github/get_latest_release.ts`
+Required: `owner`, `repo`
+
+Wrapper: `./servers/github/get_latest_release.ts` (full input/output types)
 
 ### `get_me` _(read-only)_
 
 Get details of the authenticated GitHub user. Use this when a request is about the user's own profile for GitHub. Or when information is missing to build other tool calls.
 
-Wrapper: `./servers/github/get_me.ts`
+Wrapper: `./servers/github/get_me.ts` (full input/output types)
 
 ### `get_release_by_tag` _(read-only)_
 
 Get a specific release by its tag name in a GitHub repository
 
-Wrapper: `./servers/github/get_release_by_tag.ts`
+Required: `owner`, `repo`, `tag`
+
+Wrapper: `./servers/github/get_release_by_tag.ts` (full input/output types)
 
 ### `get_tag` _(read-only)_
 
 Get details about a specific git tag in a GitHub repository
 
-Wrapper: `./servers/github/get_tag.ts`
+Required: `owner`, `repo`, `tag`
+
+Wrapper: `./servers/github/get_tag.ts` (full input/output types)
 
 ### `get_team_members` _(read-only)_
 
 Get member usernames of a specific team in an organization. Limited to organizations accessible with current credentials
 
-Wrapper: `./servers/github/get_team_members.ts`
+Required: `org`, `team_slug`
+
+Wrapper: `./servers/github/get_team_members.ts` (full input/output types)
 
 ### `get_teams` _(read-only)_
 
 Get details of the teams the user is a member of. Limited to organizations accessible with current credentials
 
-Wrapper: `./servers/github/get_teams.ts`
+Required: _(none — all parameters optional)_
+
+Wrapper: `./servers/github/get_teams.ts` (full input/output types)
 
 ### `issue_read` _(read-only)_
 
 Get information about a specific issue in a GitHub repository.
 
-Wrapper: `./servers/github/issue_read.ts`
+Required: `method`, `owner`, `repo`, `issue_number`
+
+Wrapper: `./servers/github/issue_read.ts` (full input/output types)
 
 ### `issue_write` _(destructive)_
 
 Create a new or update an existing issue in a GitHub repository.
 
-Wrapper: `./servers/github/issue_write.ts`
+Required: `method`, `owner`, `repo`
+
+Wrapper: `./servers/github/issue_write.ts` (full input/output types)
 
 ### `list_branches` _(read-only)_
 
 List branches in a GitHub repository
 
-Wrapper: `./servers/github/list_branches.ts`
+Required: `owner`, `repo`
+
+Wrapper: `./servers/github/list_branches.ts` (full input/output types)
 
 ### `list_commits` _(read-only)_
 
 Get list of commits of a branch in a GitHub repository. Returns at least 30 results per page by default, but can return more if specified using the perPage parameter (up to 100).
 
-Wrapper: `./servers/github/list_commits.ts`
+Required: `owner`, `repo`
+
+Wrapper: `./servers/github/list_commits.ts` (full input/output types)
 
 ### `list_issue_types` _(read-only)_
 
 List supported issue types for repository owner (organization).
 
-Wrapper: `./servers/github/list_issue_types.ts`
+Required: `owner`
+
+Wrapper: `./servers/github/list_issue_types.ts` (full input/output types)
 
 ### `list_issues` _(read-only)_
 
 List issues in a GitHub repository. For pagination, use the 'endCursor' from the previous response's 'pageInfo' in the 'after' parameter.
 
-Wrapper: `./servers/github/list_issues.ts`
+Required: `owner`, `repo`
+
+Wrapper: `./servers/github/list_issues.ts` (full input/output types)
 
 ### `list_pull_requests` _(read-only)_
 
 List pull requests in a GitHub repository. If the user specifies an author, then DO NOT use this tool and use the search_pull_requests tool instead.
 
-Wrapper: `./servers/github/list_pull_requests.ts`
+Required: `owner`, `repo`
+
+Wrapper: `./servers/github/list_pull_requests.ts` (full input/output types)
 
 ### `list_releases` _(read-only)_
 
 List releases in a GitHub repository
 
-Wrapper: `./servers/github/list_releases.ts`
+Required: `owner`, `repo`
+
+Wrapper: `./servers/github/list_releases.ts` (full input/output types)
 
 ### `list_tags` _(read-only)_
 
 List git tags in a GitHub repository
 
-Wrapper: `./servers/github/list_tags.ts`
+Required: `owner`, `repo`
+
+Wrapper: `./servers/github/list_tags.ts` (full input/output types)
 
 ### `merge_pull_request` _(destructive)_
 
 Merge a pull request in a GitHub repository.
 
-Wrapper: `./servers/github/merge_pull_request.ts`
+Required: `owner`, `repo`, `pullNumber`
+
+Wrapper: `./servers/github/merge_pull_request.ts` (full input/output types)
 
 ### `pull_request_read` _(read-only)_
 
 Get information on a specific pull request in GitHub repository.
 
-Wrapper: `./servers/github/pull_request_read.ts`
+Required: `method`, `owner`, `repo`, `pullNumber`
+
+Wrapper: `./servers/github/pull_request_read.ts` (full input/output types)
 
 ### `pull_request_review_write` _(destructive)_
 
@@ -231,19 +293,25 @@ Available methods:
 - resolve_thread: Resolve a review thread. Requires only "threadId" parameter with the thread's node ID (e.g., PRRT_kwDOxxx). The owner, repo, and pullNumber parameters are not used for this method. Resolving an already-resolved thread is a no-op.
 - unresolve_thread: Unresolve a previously resolved review thread. Requires only "threadId" parameter. The owner, repo, and pullNumber parameters are not used for this method. Unresolving an already-unresolved thread is a no-op.
 
-Wrapper: `./servers/github/pull_request_review_write.ts`
+Required: `method`, `owner`, `repo`, `pullNumber`
+
+Wrapper: `./servers/github/pull_request_review_write.ts` (full input/output types)
 
 ### `push_files` _(destructive)_
 
 Push multiple files to a GitHub repository in a single commit
 
-Wrapper: `./servers/github/push_files.ts`
+Required: `owner`, `repo`, `branch`, `files`, `message`
+
+Wrapper: `./servers/github/push_files.ts` (full input/output types)
 
 ### `request_copilot_review` _(destructive)_
 
 Request a GitHub Copilot code review for a pull request. Use this for automated feedback on pull requests, usually before requesting a human reviewer.
 
-Wrapper: `./servers/github/request_copilot_review.ts`
+Required: `owner`, `repo`, `pullNumber`
+
+Wrapper: `./servers/github/request_copilot_review.ts` (full input/output types)
 
 ### `run_secret_scanning` _(read-only)_
 
@@ -256,52 +324,70 @@ Caveats:
 - Only files within the codebase should be scanned. Files outside of the codebase should not be sent.
 - Files listed in .gitignore should be skipped.
 
-Wrapper: `./servers/github/run_secret_scanning.ts`
+Required: `files`, `owner`, `repo`
+
+Wrapper: `./servers/github/run_secret_scanning.ts` (full input/output types)
 
 ### `search_code` _(read-only)_
 
 Fast and precise code search across ALL GitHub repositories using GitHub's native search engine. Best for finding exact symbols, functions, classes, or specific code patterns.
 
-Wrapper: `./servers/github/search_code.ts`
+Required: `query`
+
+Wrapper: `./servers/github/search_code.ts` (full input/output types)
 
 ### `search_issues` _(read-only)_
 
 Search for issues in GitHub repositories using issues search syntax already scoped to is:issue
 
-Wrapper: `./servers/github/search_issues.ts`
+Required: `query`
+
+Wrapper: `./servers/github/search_issues.ts` (full input/output types)
 
 ### `search_pull_requests` _(read-only)_
 
 Search for pull requests in GitHub repositories using issues search syntax already scoped to is:pr
 
-Wrapper: `./servers/github/search_pull_requests.ts`
+Required: `query`
+
+Wrapper: `./servers/github/search_pull_requests.ts` (full input/output types)
 
 ### `search_repositories` _(read-only)_
 
 Find GitHub repositories by name, description, readme, topics, or other metadata. Perfect for discovering projects, finding examples, or locating specific repositories across GitHub.
 
-Wrapper: `./servers/github/search_repositories.ts`
+Required: `query`
+
+Wrapper: `./servers/github/search_repositories.ts` (full input/output types)
 
 ### `search_users` _(read-only)_
 
 Find GitHub users by username, real name, or other profile information. Useful for locating developers, contributors, or team members.
 
-Wrapper: `./servers/github/search_users.ts`
+Required: `query`
+
+Wrapper: `./servers/github/search_users.ts` (full input/output types)
 
 ### `sub_issue_write` _(destructive)_
 
 Add a sub-issue to a parent issue in a GitHub repository.
 
-Wrapper: `./servers/github/sub_issue_write.ts`
+Required: `method`, `owner`, `repo`, `issue_number`, `sub_issue_id`
+
+Wrapper: `./servers/github/sub_issue_write.ts` (full input/output types)
 
 ### `update_pull_request` _(destructive)_
 
 Update an existing pull request in a GitHub repository.
 
-Wrapper: `./servers/github/update_pull_request.ts`
+Required: `owner`, `repo`, `pullNumber`
+
+Wrapper: `./servers/github/update_pull_request.ts` (full input/output types)
 
 ### `update_pull_request_branch` _(destructive)_
 
 Update the branch of a pull request with the latest changes from the base branch.
 
-Wrapper: `./servers/github/update_pull_request_branch.ts`
+Required: `owner`, `repo`, `pullNumber`
+
+Wrapper: `./servers/github/update_pull_request_branch.ts` (full input/output types)

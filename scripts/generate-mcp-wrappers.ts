@@ -99,24 +99,31 @@ async function generateWrappers(serverName: string, serverConfig: any) {
   const serverDir = `./servers/${serverName}`;
   await fs.mkdir(serverDir, { recursive: true });
 
-  // Save server instructions if provided
   // The SDK stores instructions in _instructions (private property from InitializeResult)
   const clientAny = client as any;
   const instructions = clientAny._instructions;
-  if (instructions) {
-    const instructionsPath = path.join(serverDir, 'README.md');
-    const instructionsContent = `# ${serverName} MCP Server
 
-## Server Instructions
+  // Write a pointer README so anyone browsing ./servers/<server>/ directly gets routed to
+  // the server skill, which is the canonical place for tool index + instructions + gotchas.
+  const readmePath = path.join(serverDir, 'README.md');
+  const readmeContent = `# ${serverName} MCP server
 
-${instructions}
+Tool wrappers for the **${serverName}** MCP server.
 
----
-*These instructions were provided by the MCP server during initialization.*
+For the curated tool index, server instructions, and known gotchas, see the server skill:
+
+\`\`\`
+.claude/skills/${serverName}-server/
+\`\`\`
+
+In particular:
+- \`.claude/skills/${serverName}-server/SKILL.md\` — overview, workhorses, gotchas
+- \`.claude/skills/${serverName}-server/references/tools.md\` — full alphabetical catalog with descriptions, behavior hints, and required-parameter summaries (regenerated on every \`npm run generate-wrappers\`)
+
+The \`.ts\` files in this directory are auto-generated wrappers; their JSDoc carries each tool's full input/output types.
 `;
-    await fs.writeFile(instructionsPath, instructionsContent);
-    console.log(`  Saved server instructions to README.md`);
-  }
+  await fs.writeFile(readmePath, readmeContent);
+  console.log(`  Generated: README.md (pointer to server skill)`);
 
   for (const tool of tools) {
     const fileName = `${tool.name.replace(/^.*__/, '')}.ts`;
@@ -254,11 +261,28 @@ function renderToolCatalog(
       lines.push(String(tool.description).trim());
       lines.push('');
     }
-    lines.push(`Wrapper: \`./servers/${serverName}/${localName}.ts\``);
+
+    const required = extractRequiredParams(tool.inputSchema);
+    if (required.length > 0) {
+      lines.push(`Required: ${required.map(r => `\`${r}\``).join(', ')}`);
+      lines.push('');
+    } else if (tool.inputSchema && Object.keys(tool.inputSchema.properties ?? {}).length > 0) {
+      lines.push('Required: _(none — all parameters optional)_');
+      lines.push('');
+    }
+
+    lines.push(`Wrapper: \`./servers/${serverName}/${localName}.ts\` (full input/output types)`);
     lines.push('');
   }
 
   return lines.join('\n');
+}
+
+function extractRequiredParams(inputSchema: any): string[] {
+  if (!inputSchema || typeof inputSchema !== 'object') return [];
+  const req = inputSchema.required;
+  if (!Array.isArray(req)) return [];
+  return req.filter(r => typeof r === 'string');
 }
 
 function renderSkillSeed(serverName: string, toolCount: number): string {
