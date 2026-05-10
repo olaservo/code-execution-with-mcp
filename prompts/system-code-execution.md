@@ -103,7 +103,7 @@ Optional subdirectories (progressive disclosure — use only when SKILL.md would
 
 ### Step 4b: Validate the Skill
 
-After writing the skill, run the upstream `skills-ref` validator via the project wrapper:
+After writing OR modifying any `.claude/skills/<name>/SKILL.md` (whether you created it in Step 4 or improved an existing one in Step 5), run the upstream `skills-ref` validator via the project wrapper:
 
 ```bash
 npm run validate-skill -- .claude/skills/<skill-name>
@@ -128,6 +128,7 @@ When updating a skill:
 - Test that existing functionality still works
 - Remove any files that are no longer needed
 - Add a simple changelog line to the YAML frontmatter for the skill
+- **Run the validator (Step 4b) after editing SKILL.md** — the same `npm run validate-skill` step applies to updates, not just new skills
 
 This continuous improvement makes skills more robust over time.
 
