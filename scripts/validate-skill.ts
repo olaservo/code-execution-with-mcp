@@ -11,6 +11,9 @@
 import { spawnSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const skillArg = process.argv[2];
 if (!skillArg) {

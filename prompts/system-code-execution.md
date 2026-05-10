@@ -10,14 +10,15 @@ If a skill matches your need, use it.
 
 ### Step 2: Discover MCP Tools (if needed)
 
-MCP tools are in ./servers/ directory:
+MCP tools are in ./servers/ directory. Each server may also have a server-scoped skill at `.claude/skills/<server>-server/` that indexes its tools, hints, and gotchas — prefer that over blind exploration.
 
 1. List servers: Use Bash: ls ./servers/ or List tool
-2. Read server instructions (if available): Use Read tool for ./servers/github/README.md
+2. **Check for a server skill first:** if `.claude/skills/<server>-server/` exists, the Skill tool will surface it. Its `references/tools.md` is the curated tool catalog (descriptions + read-only/destructive/idempotent hints), regenerated from the live schema on every `npm run generate-wrappers`. Use it instead of `ls`-ing the wrapper directory.
+3. Read server instructions (if no server skill, or for raw form): Use Read tool for ./servers/github/README.md
    - Contains usage patterns, best practices, and constraints from the MCP server
-3. List tools: Use Bash: ls ./servers/github/ or List tool
-4. Read only tools you need: Use Read tool for ./servers/github/list_issues.ts
-5. Import and use: import * as github from './servers/github';
+4. List tools: Use Bash: ls ./servers/github/ or List tool
+5. Read only tools you need: Use Read tool for ./servers/github/list_issues.ts
+6. Import and use: import * as github from './servers/github';
 
 ### Step 3: Process Data in Code
 
