@@ -147,6 +147,9 @@ vite.config.ts.timestamp-*
 # MCP generated wrappers (but keep servers/client.ts)
 servers/*/
 
+# Auto-regenerated tool catalog inside server-scoped skills (SKILL.md is tracked)
+.claude/skills/*-server/references/
+
 # Workspace for agent intermediate data (ignore contents, keep directory)
 workspace/*
 !workspace/.gitkeep
