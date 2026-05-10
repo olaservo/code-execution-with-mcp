@@ -43,7 +43,20 @@ await fs.writeFile('./workspace/all-issues.json', JSON.stringify(allIssues, null
 
 ### Step 4: Save Successful Code as Skills
 
-AFTER successfully completing a task, create a reusable skill:
+AFTER successfully completing a task, create a reusable skill. For non-trivial skills, Read `prompts/skill-authoring-reference.md` before writing.
+
+**Authoring checklist (from the agentskills spec):**
+
+- **Name:** lowercase letters/numbers/hyphens only, 1–64 chars, matches the directory name. No leading/trailing/consecutive hyphens.
+- **Description (≤1024 chars):** Must say **when to use** the skill, phrased imperatively ("Use when…"). This is the only field the agent sees at startup — if it doesn't trigger, the skill is dead weight.
+- **Length:** Keep `SKILL.md` under ~500 lines / ~5k tokens. Move deeper material into `references/`, `scripts/`, or `assets/` and reference it inline with a load condition ("Read `references/api-errors.md` if the API returns non-200").
+- **Spend tokens on what the agent doesn't already know:** project conventions, gotchas, non-obvious edge cases. Skip background on PDFs / HTTP / general programming.
+- **Defaults, not menus:** pick one tool/approach, mention alternatives briefly.
+- **Procedures, not specific answers:** teach a method that generalizes to similar tasks.
+- **Gotchas:** when you got corrected during the task, capture that correction as a bullet in `## Gotchas`. These are the highest-value lines in most skills.
+- **Calibrate prescriptiveness to fragility:** prescriptive for destructive or fragile ops; flexible (and explain *why*) for tasks with multiple valid approaches.
+
+**Steps:**
 
 1. Create skill directory:
    Use Bash: mkdir -p .claude/skills/[skill-name]
@@ -53,7 +66,7 @@ AFTER successfully completing a task, create a reusable skill:
 ```markdown
 ---
 name: skill-name-here
-description: What this skill does and WHEN to use it. Max 1024 chars.
+description: Use when <triggering condition>. <What it does, briefly.> Max 1024 chars.
 ---
 
 # Skill Name
@@ -67,11 +80,35 @@ import { functionName } from './.claude/skills/skill-name/implementation';
 const result = await functionName(params);
 \`\`\`
 
+## Gotchas
+- Non-obvious facts the agent will get wrong without being told. Example: "The `users` table uses soft deletes — queries must include `WHERE deleted_at IS NULL`."
+
 ## Dependencies
 - List MCP tools used
 ```
 
+Optional subdirectories (progressive disclosure — use only when SKILL.md would otherwise exceed ~500 lines):
+
+```
+.claude/skills/skill-name/
+├── SKILL.md              # required
+├── implementation.ts     # exported functions
+├── references/           # long-form docs loaded on demand
+├── scripts/              # tested helper scripts
+└── assets/               # templates, schemas, data files
+```
+
 3. Create implementation.ts using Write tool with exported functions
+
+### Step 4b: Validate the Skill
+
+After writing the skill, run the upstream `skills-ref` validator via the project wrapper:
+
+```bash
+npm run validate-skill -- .claude/skills/<skill-name>
+```
+
+It checks frontmatter shape, name/description constraints, and directory structure. If it reports problems, fix the SKILL.md and re-run until clean. If `skills-ref` is not installed (see project README), report that and fall back to the authoring checklist above — don't block on it.
 
 ### Step 5: Improve Existing Skills
 

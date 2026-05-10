@@ -202,6 +202,7 @@ GITHUB_PAT=your_github_personal_access_token # Needed if using the GitHub MCP Se
 ANTHROPIC_API_KEY=your_anthropic_api_key # OR: use AWS Bedrock setting
 CLAUDE_CODE_USE_BEDROCK=0  # Set to 1 to use AWS Bedrock models
 ANTHROPIC_DEFAULT_HAIKU_MODEL=us.anthropic.claude-haiku-4-5-20251001-v1:0 # If using AWS Bedrock, latest Haiku is not used by default and needs to be explicitly set
+SKILLS_REF_BIN=/path/to/agentskills # Optional. Absolute path to the agentskills validator if not on PATH. See section 3 below.
 ```
 
 **Model Selection:**
@@ -222,7 +223,29 @@ The agent automatically selects the appropriate models based on the `CLAUDE_CODE
 npm install
 ```
 
-### 3. Generate MCP Wrappers
+### 3. Install the Skills Validator (Recommended)
+
+When the agent creates new skills under `.claude/skills/`, the system prompt asks it to validate the result with the reference validator from the [agentskills](https://agentskills.io) project. The PyPI package is `skills-ref` and the installed CLI binary is `agentskills`. **Install it.** Without it, the agent's authored skills can have frontmatter mistakes that silently make them un-discoverable (e.g., the `name` field not matching the directory name, naming-rule violations, or descriptions over the 1024-char limit) — the kinds of bugs the inline checklist in `prompts/system-code-execution.md` is unlikely to catch reliably. If the validator isn't present the wrapper degrades gracefully (the agent reports it and proceeds), but you give up the mechanical safety net.
+
+Requires **Python ≥3.11**. `pipx` (isolated venv per CLI) is the cleanest option:
+
+```bash
+pipx install skills-ref
+```
+
+Alternatives:
+- `uv tool install skills-ref`
+- Direct: `py -3.11 -m pip install --user skills-ref` on Windows, or `python3.11 -m pip install --user skills-ref` elsewhere.
+
+Verify with `agentskills --help`.
+
+**If the `agentskills` binary is not on `PATH`** (common with `pip install --user` on Windows — the warning will point at e.g. `%APPDATA%\Python\Python311\Scripts`), either add that dir to `PATH` or set `SKILLS_REF_BIN` to the absolute exe path before running the agent. The wrapper at `scripts/validate-skill.ts` honors `SKILLS_REF_BIN` if set.
+
+The agent then invokes the wrapper via `npm run validate-skill -- .claude/skills/<skill-name>`. The authoring guidance the agent follows when writing skills lives in `prompts/skill-authoring-reference.md`, distilled from the upstream docs.
+
+> Note: upstream labels `skills-ref` as a demonstration library, not a production gate. Treat its output as advisory.
+
+### 4. Generate MCP Wrappers
 
 **Required** - wrappers are not checked into git (except `client.ts`):
 

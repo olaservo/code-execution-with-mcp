@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Edit(workspace/**)",
-      "Edit(.claude/skills/**)"
+      "Edit(.claude/skills/**)",
+      "Bash(npm run validate-skill:*)"
     ],
     "deny": [
     ]

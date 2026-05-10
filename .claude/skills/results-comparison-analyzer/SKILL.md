@@ -1,5 +1,5 @@
 ---
-name: mcp-code-execution-results-comparison-analyzer
+name: results-comparison-analyzer
 description: Analyzes experimental results comparing code-execution vs direct-MCP approaches for any task. Extracts performance metrics, execution logs, and workspace outputs from zip archives to generate detailed comparison reports.  Use when you have a results zip file and need to compare code-execution vs direct-MCP performance, cost, and output quality for any task.
 ---
 
