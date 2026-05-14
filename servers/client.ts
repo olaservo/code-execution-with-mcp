@@ -30,22 +30,42 @@ export async function callMCPTool<T = any>(
     arguments: input
   });
 
+  // Tool signalled failure — throw so generated code can use try/catch.
+  if (result.isError) {
+    const msg = Array.isArray(result.content)
+      ? result.content
+          .filter((c: any) => c.type === 'text')
+          .map((c: any) => c.text)
+          .join('\n')
+      : '';
+    throw new Error(
+      `${serverName}.${toolName} failed: ${msg || 'tool call failed'}`
+    );
+  }
+
   // Per MCP spec: a tool that declares outputSchema MUST return structuredContent.
   // Prefer it over re-parsing the back-compat TextContent mirror.
   if (result.structuredContent !== undefined) {
     return result.structuredContent as T;
   }
 
-  // Fallback: parse the first content block (legacy / no-outputSchema tools).
-  if (result.content && Array.isArray(result.content) && result.content[0]) {
-    const content = result.content[0];
-    if ('text' in content && content.text) {
+  // Fallback: parse the content blocks. Join all text chunks (not just [0]),
+  // then JSON.parse if the joined text parses cleanly.
+  if (Array.isArray(result.content) && result.content.length > 0) {
+    const allText = result.content.every((c: any) => c.type === 'text');
+    if (allText) {
+      const text = result.content
+        .map((c: any) => ('text' in c ? c.text : ''))
+        .join('\n');
       try {
-        return JSON.parse(content.text);
+        return JSON.parse(text);
       } catch {
-        return content.text as T;
+        return text as T;
       }
     }
+    // Mixed content (text + image/audio/resource) — hand back the array,
+    // since binary blocks have no clean plain-value representation.
+    return result.content as T;
   }
 
   return result as T;
